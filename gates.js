@@ -40,7 +40,6 @@ export function tickCircuitSimulation(gridData) {
     { dx: 0, dy: -1, from: 'bottom' } 
   ];
 
-  // PASS 1: Calculate power distribution vector maps
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
     const cell = gridData[key];
@@ -111,7 +110,6 @@ export function tickCircuitSimulation(gridData) {
     }
   }
 
-  // PASS 2: Poll structural inputs and commit transitions
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
     const current = nextStates[key];
