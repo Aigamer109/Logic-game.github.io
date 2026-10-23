@@ -56,6 +56,7 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
+      // FIXED: Restored the [0] array index to stop the script from crashing
       if (cell.incomingSignals && cell.incomingSignals.length > 0) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
@@ -86,22 +87,22 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
-        else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
+    else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
       const activeInputs = cell.activeInputDirections || [];
       const targetOutputs = [];
 
-      // Check if the current gate is an inverting gate
+      const hasInputsConnected = cell.incomingSignals && cell.incomingSignals.length > 0;
       const isInvertingGate = ['not', 'nand', 'xnor'].includes(cell.id.toLowerCase());
 
-      if (isInvertingGate) {
-        // Output in all 4 orthogonal directions normally
+      if (isInvertingGate && hasInputsConnected) {
+        // Output cleanly in all 4 orthogonal directions normally
         targetOutputs.push(
-          { dx: 1, dy: 0 },  // Right
-          { dx: -1, dy: 0 }, // Left
-          { dx: 0, dy: 1 },  // Down
-          { dx: 0, dy: -1 }  // Up
+          { dx: 1, dy: 0 },
+          { dx: -1, dy: 0 },
+          { dx: 0, dy: 1 },
+          { dx: 0, dy: -1 }
         );
-      } else {
+      } else if (!isInvertingGate) {
         // Standard directional propagation for non-inverting gates (AND, OR, XOR)
         if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
         if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
@@ -122,6 +123,7 @@ export function tickCircuitSimulation(gridData) {
         }
       });
     }
+  }
 
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
@@ -147,12 +149,19 @@ export function tickCircuitSimulation(gridData) {
       }
 
       gridData[key].activeInputDirections = Array.from(new Set(activeSides));
+      gridData[key].incomingSignals = current.incomingSignals;
 
-      const inputCount = gridData[key].activeInputDirections.length;
-      const inputA = inputCount > 0 ? 1 : 0;
-      const inputB = inputCount > 1 ? 1 : 0;
+      const isInvertingGate = ['not', 'nand', 'xnor'].includes(current.id.toLowerCase());
+      const hasInputsConnected = current.incomingSignals && current.incomingSignals.length > 0;
 
-      gridData[key].state = evaluateGate(current.id, inputA, inputB);
+      if (isInvertingGate && !hasInputsConnected) {
+        gridData[key].state = 0;
+      } else {
+        const inputCount = gridData[key].activeInputDirections.length;
+        const inputA = inputCount > 0 ? 1 : 0;
+        const inputB = inputCount > 1 ? 1 : 0;
+        gridData[key].state = evaluateGate(current.id, inputA, inputB);
+      }
     }
     
     if (current.id === 'conduct' || current.id === 'bulb' || current.id === 'oneway') {
