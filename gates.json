@@ -6,10 +6,10 @@
   { "id": "toggle", "name": "Memory", "type": "memory", "state": 0 },
   { "id": "bulb", "name": "Bulb", "type": "output", "state": 0 },
   { "id": "oneway", "name": "One-Way Gate", "type": "gate", "state": 0, "dx": 1, "dy": 0 },
-  { "id": "and", "name": "AND Gate", "type": "gate" },
-  { "id": "or", "name": "OR Gate", "type": "gate" },
-  { "id": "xor", "name": "XOR Gate", "type": "gate" },
-  { "id": "nand", "name": "NAND Gate", "type": "gate", "isInverting": true },
-  { "id": "not", "name": "NOT Gate", "type": "gate", "isInverting": true },
-  { "id": "xnor", "name": "XNOR Gate", "type": "gate", "isInverting": true }
+  { "id": "and", "name": "AND Gate", "type": "gate", "state": 0 },
+  { "id": "or", "name": "OR Gate", "type": "gate", "state": 0 },
+  { "id": "xor", "name": "XOR Gate", "type": "gate", "state": 0 },
+  { "id": "nand", "name": "NAND Gate", "type": "gate", "isInverting": true, "state": 1 },
+  { "id": "not", "name": "NOT Gate", "type": "gate", "isInverting": true, "state": 1 },
+  { "id": "xnor", "name": "XNOR Gate", "type": "gate", "isInverting": true, "state": 1 }
 ]
