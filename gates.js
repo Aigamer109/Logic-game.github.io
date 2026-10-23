@@ -57,7 +57,8 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
-      if (cell.incomingSignals && cell.incomingSignals.length > 0) {
+      // FIXED: Added [0] index to read properties from the array item correctly
+      if (cell.incomingSignals && cell.incomingSignals.length > 0 && cell.incomingSignals[0]) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
       }
@@ -91,12 +92,11 @@ export function tickCircuitSimulation(gridData) {
       const gateId = cell.id ? cell.id.toLowerCase() : '';
       const isInverting = (gateId === 'not' || gateId === 'nand' || gateId === 'xnor');
       
-      // Determine output criteria safely based on your exact structure rules
+      // If it's an inverting gate, let it run when state is 1 OR uninitialized (undefined) so it works on frame 1
       const shouldOutput = isInverting ? (cell.state !== 0) : (cell.state === 1);
 
       if (shouldOutput) {
         if (isInverting) {
-          // Push signal to all 4 orthogonally adjacent neighbors
           orthoDirections.forEach(d => {
             const targetKey = `${r + d.dy}_${c + d.dx}`;
             if (nextStates[targetKey]) {
