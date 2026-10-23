@@ -1,210 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <!-- Blocks the browser from taking over screen zoom layout transformations on dual taps -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>LOGIC GAME V0.23</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #121212;
-      font-family: system-ui, -apple-system, sans-serif;
-      touch-action: none; /* Globally tells mobile devices not to trigger webpage zoom gestures */
-    }
-
-    /* Fixed Top Navigation Bar Bar - Exactly 5 items spaced evenly */
-    #top-toolbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background: rgba(20, 20, 20, 0.95);
-      border-bottom: 2px solid #333;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr); 
-      align-items: center;
-      justify-items: center;
-      padding: 0 6px;
-      box-sizing: border-box;
-      z-index: 1000;
-    }
-
-    /* Unified Touch Buttons style */
-    .utility-btn, #tray-toggle, #eraser-toggle {
-      width: 95%;
-      max-width: 110px;
-      height: 40px;
-      background: #2b2b2b;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .utility-btn:active, #tray-toggle:active, #eraser-toggle:active {
-      background: #444;
-    }
-
-    .utility-btn.active, #eraser-toggle.active {
-      background: #d32f2f !important;
-      border-color: #f44336 !important;
-    }
-
-    /* Main Interaction Grid Viewport Layer */
-    #viewport {
-      position: absolute;
-      top: 60px; 
-      left: 0;
-      width: 100vw;
-      height: calc(100vh - 60px);
-      overflow: hidden;
-      background-color: #1a1a1a;
-    }
-
-    #canvas-container {
-      position: absolute;
-      transform-origin: 0 0;
-    }
-
-    #grid {
-      position: relative;
-      background-size: 64px 64px;
-      background-image: 
-        linear-gradient(to right, #2a2a2a 1px, transparent 1px),
-        linear-gradient(to bottom, #2a2a2a 1px, transparent 1px);
-    }
-
-    .cell {
-      position: absolute;
-      width: 64px;
-      height: 64px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cell img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-    }
-
-    /* Component Bottom Drawer Overlay */
-    #tray {
-      position: fixed;
-      bottom: -140px; 
-      left: 0;
-      width: 100%;
-      height: 140px;
-      background: rgba(20, 20, 20, 0.95);
-      border-top: 2px solid #333;
-      transition: bottom 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #tray.open {
-      bottom: 0; 
-    }
-
-    #tray-scroller {
-      flex: 1;
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
-      padding: 10px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .tray-item {
-      flex-shrink: 0;
-      width: 64px;
-      height: 64px;
-      background-color: #2a2a2a;
-      border: 2px solid #444;
-      border-radius: 8px;
-    }
-
-    .tray-item.active {
-      border-color: #2ecc71 !important;
-      background-color: #1e3c23;
-    }
-
-    /* Single speed controls row placed inside expandable tray container row elements */
-    .speed-control-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #181818;
-      padding: 6px 16px;
-      border-top: 1px solid #2d2d2d;
-      height: 36px;
-      box-sizing: border-box;
-    }
-
-    #speed-slider {
-      flex: 1;
-      height: 6px;
-      background: #444;
-      outline: none;
-      accent-color: #2ecc71;
-    }
-
-    #speed-label {
-      color: #bbb;
-      font-size: 12px;
-      font-weight: bold;
-      min-width: 75px;
-      text-align: right;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LOGIC GAME V0.23</title>
+<style>
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #121212; font-family: system-ui, -apple-system, sans-serif; touch-action: none; }
+#top-toolbar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(20, 20, 20, 0.95); border-bottom: 2px solid #333; display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; justify-items: center; padding: 0 6px; box-sizing: border-box; z-index: 1000; }
+.utility-btn, #tray-toggle, #eraser-toggle { width: 95%; max-width: 110px; height: 40px; background: #2b2b2b; color: #fff; border: 1px solid #444; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; -webkit-user-select: none; }
+.utility-btn:active, #tray-toggle:active, #eraser-toggle:active { background: #444; }
+.utility-btn.active, #eraser-toggle.active { background: #d32f2f !important; border-color: #f44336 !important; }
+#viewport { position: absolute; top: 60px; left: 0; width: 100vw; height: calc(100vh - 60px); overflow: hidden; background-color: #1a1a1a; }
+#canvas-container { position: absolute; transform-origin: 0 0; }
+#grid { position: relative; background-size: 64px 64px; background-image: linear-gradient(to right, #2a2a2a 1px, transparent 1px), linear-gradient(to bottom, #2a2a2a 1px, transparent 1px); }
+.cell { position: absolute; width: 64px; height: 64px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+.cell img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+#tray { position: fixed; bottom: -140px; left: 0; width: 100%; height: 140px; background: rgba(20, 20, 20, 0.95); border-top: 2px solid #333; transition: bottom 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); z-index: 999; display: flex; flex-direction: column; }
+#tray.open { bottom: 0; }
+#tray-scroller { flex: 1; overflow-x: auto; overflow-y: hidden; white-space: nowrap; padding: 10px; display: flex; gap: 12px; align-items: center; -webkit-overflow-scrolling: touch; }
+.tray-item { flex-shrink: 0; width: 64px; height: 64px; background-color: #2a2a2a; border: 2px solid #444; border-radius: 8px; }
+.tray-item.active { border-color: #2ecc71 !important; background-color: #1e3c23; }
+.speed-control-container { display: flex; align-items: center; gap: 12px; background: #181818; padding: 6px 16px; border-top: 1px solid #2d2d2d; height: 36px; box-sizing: border-box; }
+#speed-slider { flex: 1; height: 6px; background: #444; outline: none; accent-color: #2ecc71; }
+#speed-label { color: #bbb; font-size: 12px; font-weight: bold; min-width: 75px; text-align: right; }
+</style>
 </head>
 <body>
-
-  <!-- FIXED: Clean Top Toolbar containing all 5 utility options natively -->
-  <div id="top-toolbar">
-    <button id="tray-toggle">Tray</button>
-    <button id="eraser-toggle">Eraser</button>
-    <button id="export-btn" class="utility-btn">Export</button>
-    <button id="import-btn" class="utility-btn">Import</button>
-    <button id="clear-btn" class="utility-btn">Clear</button>
-  </div>
-
-  <div id="viewport">
-    <div id="canvas-container">
-      <div id="grid"></div>
-    </div>
-  </div>
-
-  <div id="tray">
-    <div id="tray-scroller"></div>
-    <!-- FIXED: Single speed slider sits safely integrated directly inside drawer layout -->
-    <div class="speed-control-container">
-      <input type="range" id="speed-slider" min="1" max="15" value="1">
-      <span id="speed-label">Speed: 1x</span>
-    </div>
-  </div>
-
-  <script type="module" src="main.js"></script>
+<div id="top-toolbar">
+<button id="tray-toggle">Tray</button>
+<button id="eraser-toggle">Eraser</button>
+<button id="export-btn" class="utility-btn">Export</button>
+<button id="import-btn" class="utility-btn">Import</button>
+<button id="clear-btn" class="utility-btn">Clear</button>
+</div>
+<div id="viewport">
+<div id="canvas-container">
+<div id="grid"></div>
+</div>
+</div>
+<div id="tray">
+<div id="tray-scroller"></div>
+<div class="speed-control-container">
+<input type="range" id="speed-slider" min="1" max="15" value="1">
+<span id="speed-label">Speed: 1x</span>
+</div>
+</div>
+<script type="module" src="main.js"></script>
 </body>
 </html>
