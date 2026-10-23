@@ -21,7 +21,6 @@ const grid = document.getElementById('grid');
 const tray = document.getElementById('tray');
 const trayScroller = document.getElementById('tray-scroller');
 
-// FIXED: Targeted existing native element node models cleanly
 const trayToggle = document.getElementById('tray-toggle');
 const eraserToggle = document.getElementById('eraser-toggle');
 const exportBtn = document.getElementById('export-btn');
@@ -30,7 +29,6 @@ const clearBtn = document.getElementById('clear-btn');
 const speedSlider = document.getElementById('speed-slider');
 const speedLabel = document.getElementById('speed-label');
 
-// Hook Serialization Logic right to existing structural navbar buttons
 if (exportBtn) {
   exportBtn.addEventListener('click', () => {
     if (Object.keys(gridData).length === 0) {
@@ -38,11 +36,9 @@ if (exportBtn) {
       return;
     }
     
-    // Create a blob from your circuit JSON data
     const jsonString = JSON.stringify(gridData, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     
-    // Build a temporary link element to trigger the download automatically
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `circuit_schematic_${Date.now()}.json`;
@@ -56,7 +52,6 @@ if (exportBtn) {
 
 if (importBtn) {
   importBtn.addEventListener('click', () => {
-    // Dynamically spawn a file input selector
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.json';
@@ -140,7 +135,6 @@ viewport.addEventListener('mousedown', (e) => {
   startY = e.clientY - panY;
 });
 
-// FIXED: Fully intercepts mobile touch points so the native device layout won't trigger pinch page zooms
 viewport.addEventListener('touchstart', (e) => {
   if (e.target.closest('#tray') || e.target.closest('#top-toolbar')) return;
   
@@ -149,7 +143,7 @@ viewport.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX - panX;
     startY = e.touches[0].clientY - panY;
   } else if (e.touches.length === 2) {
-    e.preventDefault(); // Intercept browser page scaling completely
+    e.preventDefault(); 
     isDragging = false;
     initialPinchDist = getPinchDistance(e);
     initialScale = scale;
@@ -169,7 +163,7 @@ window.addEventListener('touchmove', (e) => {
     panY = e.touches[0].clientY - startY;
     updateTransform();
   } else if (e.touches.length === 2) {
-    e.preventDefault(); // Lock viewport zoom limits internally to this element frame
+    e.preventDefault(); 
     const currentDist = getPinchDistance(e);
     if (initialPinchDist > 0) {
       const oldScale = scale;
@@ -317,6 +311,7 @@ function renderCellVisual(cellElement, itemData) {
   img.onerror = () => { 
     cellElement.style.backgroundColor = itemData.state === 1 ? '#2ecc71' : '#e74c3c'; 
   };
+
 
    if (itemData.id === 'oneway') {
     if (itemData.dx === 1 && itemData.dy === 0)   img.style.transform = 'rotate(0deg)';   
