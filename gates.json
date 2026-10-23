@@ -9,7 +9,7 @@
   { "id": "and", "name": "AND Gate", "type": "gate" },
   { "id": "or", "name": "OR Gate", "type": "gate" },
   { "id": "xor", "name": "XOR Gate", "type": "gate" },
-  { "id": "nand", "name": "NAND Gate", "type": "gate" },
-  { "id": "not", "name": "NOT Gate", "type": "gate" },
-  { "id": "xnor", "name": "XNOR Gate", "type": "gate" }
+  { "id": "nand", "name": "NAND Gate", "type": "gate", "isInverting": true },
+  { "id": "not", "name": "NOT Gate", "type": "gate", "isInverting": true },
+  { "id": "xnor", "name": "XNOR Gate", "type": "gate", "isInverting": true }
 ]
