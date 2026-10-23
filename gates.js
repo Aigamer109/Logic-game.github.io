@@ -88,26 +88,38 @@ export function tickCircuitSimulation(gridData) {
       }
     }
     else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
-      const activeInputs = cell.activeInputDirections || [];
-      const targetOutputs = [];
-
-      if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
-      if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
-      if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
-      if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
-
-      const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
-        .map(str => {
-          const [dx, dy] = str.split('_').map(Number);
-          return { dx, dy };
+      const gateId = cell.id.toLowerCase();
+      // Check if this is an inverting gate
+      if (gateId === 'not' || gateId === 'nand' || gateId === 'xnor') {
+        orthoDirections.forEach(d => {
+          const targetKey = `${r + d.dy}_${c + d.dx}`;
+          if (nextStates[targetKey]) {
+            nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+          }
         });
+      } else {
+        // Standard directional gates (AND, OR, XOR)
+        const activeInputs = cell.activeInputDirections || [];
+        const targetOutputs = [];
 
-      uniqueOutputs.forEach(d => {
-        const targetKey = `${r + d.dy}_${c + d.dx}`;
-        if (nextStates[targetKey]) {
-          nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
-        }
-      });
+        if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
+        if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
+        if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
+        if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
+
+        const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
+          .map(str => {
+            const [dx, dy] = str.split('_').map(Number);
+            return { dx, dy };
+          });
+
+        uniqueOutputs.forEach(d => {
+          const targetKey = `${r + d.dy}_${c + d.dx}`;
+          if (nextStates[targetKey]) {
+            nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+          }
+        });
+      }
     }
   }
 
