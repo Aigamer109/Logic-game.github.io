@@ -1,0 +1,373 @@
+{
+  "64_64": {
+    "id": "and",
+    "name": "AND Gate",
+    "type": "gate",
+    "activeInputDirections": [],
+    "state": 0
+  },
+  "59_64": {
+    "id": "xor",
+    "name": "XOR Gate",
+    "type": "gate",
+    "activeInputDirections": [],
+    "state": 0
+  },
+  "64_60": {
+    "id": "switch",
+    "name": "Toggle Switch",
+    "type": "input",
+    "state": 0
+  },
+  "61_60": {
+    "id": "switch",
+    "name": "Toggle Switch",
+    "type": "input",
+    "state": 0
+  },
+  "64_61": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "64_62": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "64_63": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "61_61": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "62_61": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "62_64": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "63_64": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "60_61": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "64_65": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "64_66": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "63_66": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "59_66": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "60_66": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "61_66": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "62_63": {
+    "id": "or",
+    "name": "OR Gate",
+    "type": "gate",
+    "activeInputDirections": [],
+    "state": 0
+  },
+  "63_63": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 0,
+    "dy": -1,
+    "incomingSignals": []
+  },
+  "61_63": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "57_64": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "58_64": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 0,
+    "dy": 1,
+    "incomingSignals": []
+  },
+  "60_63": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 0,
+    "dy": -1,
+    "incomingSignals": []
+  },
+  "59_63": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "59_65": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 1,
+    "dy": 0,
+    "incomingSignals": []
+  },
+  "60_65": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 1,
+    "dy": 0,
+    "incomingSignals": []
+  },
+  "60_64": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "62_62": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 1,
+    "dy": 0,
+    "incomingSignals": []
+  },
+  "60_62": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "59_62": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 0,
+    "dy": -1,
+    "incomingSignals": []
+  },
+  "58_62": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 0,
+    "dy": -1,
+    "incomingSignals": []
+  },
+  "57_63": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 1,
+    "dy": 0,
+    "incomingSignals": []
+  },
+  "57_62": {
+    "id": "conduct",
+    "name": "Conductor",
+    "type": "wire",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "58_63": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "61_62": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "61_64": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "61_65": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "62_65": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "63_65": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "62_66": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "62_67": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "63_67": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 1,
+    "dy": 0,
+    "incomingSignals": []
+  },
+  "61_67": {
+    "id": "oneway",
+    "name": "One-Way Gate",
+    "type": "gate",
+    "state": 0,
+    "dx": 1,
+    "dy": 0,
+    "incomingSignals": []
+  },
+  "63_68": {
+    "id": "bulb",
+    "name": "Bulb",
+    "type": "output",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "61_68": {
+    "id": "bulb",
+    "name": "Bulb",
+    "type": "output",
+    "state": 0,
+    "incomingSignals": []
+  },
+  "63_62": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "63_61": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "59_61": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "58_61": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "57_61": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "57_65": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "57_66": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "58_66": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  },
+  "58_65": {
+    "id": "insulate",
+    "name": "Insulator",
+    "type": "block"
+  }
+}
