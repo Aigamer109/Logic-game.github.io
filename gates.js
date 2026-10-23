@@ -57,7 +57,6 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
-      // FIXED syntax structure back to your exact setup style
       if (cell.incomingSignals && cell.incomingSignals.length > 0) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
@@ -88,38 +87,43 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
-    else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
-      const gateId = cell.id.toLowerCase();
+    // CLEANED UP CONDITION: We let all gates evaluate in Pass 1, and handle their active output rule inside
+    else if (cell.type === 'gate' && cell.id !== 'oneway') {
       
-      // Check if this is an active inverting gate
-      if (gateId === 'not' || gateId === 'nand' || gateId === 'xnor') {
-        orthoDirections.forEach(d => {
-          const targetKey = `${r + d.dy}_${c + d.dx}`;
-          if (nextStates[targetKey]) {
-            nextStates[nextStates.hasOwnProperty(targetKey) ? targetKey : '']?.incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
-          }
-        });
-      } else {
-        const activeInputs = cell.activeInputDirections || [];
-        const targetOutputs = [];
-
-        if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
-        if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
-        if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
-        if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
-
-        const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
-          .map(str => {
-            const [dx, dy] = str.split('_').map(Number);
-            return { dx, dy };
+      if (cell.isInverting) {
+        // If it's an inverting gate, it outputs to all 4 squares if its current state is active (1)
+        if (cell.state === 1) {
+          orthoDirections.forEach(d => {
+            const targetKey = `${r + d.dy}_${c + d.dx}`;
+            if (nextStates[targetKey]) {
+              nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+            }
           });
+        }
+      } else {
+        // Keeps your exact original directional logic for standard gates (AND, OR, XOR) if they are active
+        if (cell.state === 1) {
+          const activeInputs = cell.activeInputDirections || [];
+          const targetOutputs = [];
 
-        uniqueOutputs.forEach(d => {
-          const targetKey = `${r + d.dy}_${c + d.dx}`;
-          if (nextStates[targetKey]) {
-            nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
-          }
-        });
+          if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
+          if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
+          if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
+          if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
+
+          const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
+            .map(str => {
+              const [dx, dy] = str.split('_').map(Number);
+              return { dx, dy };
+            });
+
+          uniqueOutputs.forEach(d => {
+            const targetKey = `${r + d.dy}_${c + d.dx}`;
+            if (nextStates[targetKey]) {
+              nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+            }
+          });
+        }
       }
     }
   }
