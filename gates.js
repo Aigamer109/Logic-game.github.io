@@ -86,14 +86,28 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
-    else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
+        else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
       const activeInputs = cell.activeInputDirections || [];
       const targetOutputs = [];
 
-      if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
-      if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
-      if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
-      if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
+      // Check if the current gate is an inverting gate
+      const isInvertingGate = ['not', 'nand', 'xnor'].includes(cell.id.toLowerCase());
+
+      if (isInvertingGate) {
+        // Output in all 4 orthogonal directions normally
+        targetOutputs.push(
+          { dx: 1, dy: 0 },  // Right
+          { dx: -1, dy: 0 }, // Left
+          { dx: 0, dy: 1 },  // Down
+          { dx: 0, dy: -1 }  // Up
+        );
+      } else {
+        // Standard directional propagation for non-inverting gates (AND, OR, XOR)
+        if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
+        if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
+        if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
+        if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
+      }
 
       const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
         .map(str => {
@@ -108,7 +122,6 @@ export function tickCircuitSimulation(gridData) {
         }
       });
     }
-  }
 
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
