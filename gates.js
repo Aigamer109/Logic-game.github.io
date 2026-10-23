@@ -25,7 +25,6 @@ export function evaluateGate(type, inputA, inputB) {
 export function tickCircuitSimulation(gridData) {
   const nextStates = {};
   
-  // 1. Initialize next simulation frame container safely
   for (let key in gridData) {
     nextStates[key] = {
       ...gridData[key],
@@ -41,7 +40,6 @@ export function tickCircuitSimulation(gridData) {
     { dx: 0, dy: -1, from: 'bottom' } 
   ];
 
-  // 2. Fire and Propagate Signals Outward
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
     const cell = gridData[key];
@@ -92,24 +90,10 @@ export function tickCircuitSimulation(gridData) {
       const activeInputs = cell.activeInputDirections || [];
       const targetOutputs = [];
 
-      // Check if gate is an inverting logic gate type
-      const isInvertingGate = ['not', 'nand', 'xnor'].includes(cell.id.toLowerCase());
-
-      if (isInvertingGate) {
-        // Inverting gates cleanly blast signals outward to all 4 orthogonal directions
-        targetOutputs.push(
-          { dx: 1, dy: 0 },
-          { dx: -1, dy: 0 },
-          { dx: 0, dy: 1 },
-          { dx: 0, -1 }
-        );
-      } else {
-        // Standard conditional propagation for non-inverting directional gates
-        if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
-        if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
-        if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
-        if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
-      }
+      if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
+      if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
+      if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
+      if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
 
       const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
         .map(str => {
@@ -126,8 +110,8 @@ export function tickCircuitSimulation(gridData) {
     }
   }
 
-  // 3. Process Logic Collection and State Update Evaluations
   for (let key in gridData) {
+    const [r, c] = key.split('_').map(Number);
     const current = nextStates[key];
 
     if (current.id === 'switch') continue;
@@ -150,9 +134,7 @@ export function tickCircuitSimulation(gridData) {
       }
 
       gridData[key].activeInputDirections = Array.from(new Set(activeSides));
-      gridData[key].incomingSignals = current.incomingSignals;
 
-      // Cleanly calculate logic state safely for all gates
       const inputCount = gridData[key].activeInputDirections.length;
       const inputA = inputCount > 0 ? 1 : 0;
       const inputB = inputCount > 1 ? 1 : 0;
