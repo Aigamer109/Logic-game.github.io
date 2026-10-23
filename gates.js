@@ -57,7 +57,6 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
-      // FIXED: Added safety check to prevent reading properties of undefined objects
       if (cell.incomingSignals && cell.incomingSignals.length > 0 && cell.incomingSignals[0]) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
@@ -89,6 +88,7 @@ export function tickCircuitSimulation(gridData) {
       }
     }
     else if (cell.type === 'gate' && cell.id !== 'oneway') {
+      // FIX: Check current active snapshot state instead of jumping out early
       if (cell.state === 1) {
         const gateId = cell.id.toLowerCase();
         
@@ -138,10 +138,22 @@ export function tickCircuitSimulation(gridData) {
     }
 
     if (current.type === 'gate' && current.id !== 'oneway') {
+      const gateId = current.id.toLowerCase();
+      const isInverting = (gateId === 'not' || gateId === 'nand' || gateId === 'xnor');
       const activeSides = [];
 
       if (current.incomingSignals && current.incomingSignals.length > 0) {
         current.incomingSignals.forEach(sig => {
+          // FIX: Inverting omni-directional output gates ignore signals bouncing back from wires they power
+          if (isInverting) {
+            const sourceKey = `${r - sig.dy}_${c - sig.dx}`;
+            const sourceCell = gridData[sourceKey];
+            // If the source tile is just a conductor receiving our power, do not treat it as an active input command
+            if (sourceCell && (sourceCell.id === 'conduct' || sourceCell.id === 'toggle') && sourceCell.state === 1) {
+              return; 
+            }
+          }
+
           if (sig.dx === 1 && sig.dy === 0) activeSides.push('left');   
           if (sig.dx === -1 && sig.dy === 0) activeSides.push('right'); 
           if (sig.dx === 0 && sig.dy === 1) activeSides.push('top');    
@@ -155,6 +167,7 @@ export function tickCircuitSimulation(gridData) {
       const inputA = inputCount > 0 ? 1 : 0;
       const inputB = inputCount > 1 ? 1 : 0;
 
+      // Update structural runtime directly
       gridData[key].state = evaluateGate(current.id, inputA, inputB);
     }
     
