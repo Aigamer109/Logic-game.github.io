@@ -287,10 +287,10 @@ function renderCellVisual(cellElement, itemData) {
   
   switch (itemData.id) {
     case 'switch':
-      filename = itemData.state === 1 ? 'SWITCH_ON.png' : 'SWITCH_OFF.png';
+      filename = itemData.state === 1 ? 'Switch_ON.png' : 'Switch_OFF.png';
       break;
     case 'button':
-      filename = itemData.state === 1 ? 'BUTTON_ON.png' : 'BUTTON_OFF.png';
+      filename = itemData.state === 1 ? 'Button_ON.png' : 'Button_OFF.png';
       break;
     case 'toggle':
       filename = itemData.state === 1 ? 'Memory_ON.png' : 'Memory_OFF.png';
