@@ -11,6 +11,7 @@ let initialScale = 1.0;
 const GRID_SIZE = 128; 
 let gridData = {};
 
+
 let simulationIntervalId = null;
 let currentSpeedMultiplier = 1;
 const BASE_TICK_MS = 150; 
