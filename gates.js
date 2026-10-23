@@ -57,7 +57,8 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
-      if (cell.incomingSignals && cell.incomingSignals.length > 0) {
+      // FIXED: Added safety check to prevent reading properties of undefined objects
+      if (cell.incomingSignals && cell.incomingSignals.length > 0 && cell.incomingSignals[0]) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
       }
@@ -87,14 +88,10 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
-       // PASS 1: Calculate power distribution vector maps
     else if (cell.type === 'gate' && cell.id !== 'oneway') {
-      // Determine if the gate should be actively outputting power on this tick
-      // (For normal gates, state must be 1. For inverting gates, state is already computed from the previous tick)
       if (cell.state === 1) {
         const gateId = cell.id.toLowerCase();
         
-        // Check if this is an inverting gate
         if (gateId === 'not' || gateId === 'nand' || gateId === 'xnor') {
           orthoDirections.forEach(d => {
             const targetKey = `${r + d.dy}_${c + d.dx}`;
@@ -103,7 +100,6 @@ export function tickCircuitSimulation(gridData) {
             }
           });
         } else {
-          // Standard directional gates (AND, OR, XOR)
           const activeInputs = cell.activeInputDirections || [];
           const targetOutputs = [];
 
@@ -127,6 +123,7 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
+  }
 
   // PASS 2: Poll structural inputs and commit transitions
   for (let key in gridData) {
