@@ -57,7 +57,7 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
-      if (cell.incomingSignals && cell.incomingSignals.length > 0 && cell.incomingSignals[0]) {
+      if (cell.incomingSignals && cell.incomingSignals.length > 0) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
       }
@@ -87,40 +87,39 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
-    else if (cell.type === 'gate' && cell.id !== 'oneway') {
-      // FIX: Check current active snapshot state instead of jumping out early
-      if (cell.state === 1) {
-        const gateId = cell.id.toLowerCase();
-        
-        if (gateId === 'not' || gateId === 'nand' || gateId === 'xnor') {
-          orthoDirections.forEach(d => {
-            const targetKey = `${r + d.dy}_${c + d.dx}`;
-            if (nextStates[targetKey]) {
-              nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
-            }
+    else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
+      const gateId = cell.id.toLowerCase();
+      
+      // SARGICAL CHANGE: If it is an inverting gate, bypass directional inputs and populate all 4 directions
+      if (gateId === 'not' || gateId === 'nand' || gateId === 'xnor') {
+        orthoDirections.forEach(d => {
+          const targetKey = `${r + d.dy}_${c + d.dx}`;
+          if (nextStates[targetKey]) {
+            nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+          }
+        });
+      } else {
+        // Keeps your exact original logic for directional gates (AND, OR, XOR)
+        const activeInputs = cell.activeInputDirections || [];
+        const targetOutputs = [];
+
+        if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
+        if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
+        if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
+        if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
+
+        const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
+          .map(str => {
+            const [dx, dy] = str.split('_').map(Number);
+            return { dx, dy };
           });
-        } else {
-          const activeInputs = cell.activeInputDirections || [];
-          const targetOutputs = [];
 
-          if (activeInputs.includes('left'))   targetOutputs.push({dx: 1, dy: 0}, {dx: 1, dy: -1}, {dx: 1, dy: 1});
-          if (activeInputs.includes('right'))  targetOutputs.push({dx: -1, dy: 0}, {dx: -1, dy: -1}, {dx: -1, dy: 1});
-          if (activeInputs.includes('top'))    targetOutputs.push({dx: 0, dy: 1}, {dx: -1, dy: 1}, {dx: 1, dy: 1});
-          if (activeInputs.includes('bottom')) targetOutputs.push({dx: 0, dy: -1}, {dx: -1, dy: -1}, {dx: 1, dy: -1});
-
-          const uniqueOutputs = Array.from(new Set(targetOutputs.map(o => `${o.dx}_${o.dy}`)))
-            .map(str => {
-              const [dx, dy] = str.split('_').map(Number);
-              return { dx, dy };
-            });
-
-          uniqueOutputs.forEach(d => {
-            const targetKey = `${r + d.dy}_${c + d.dx}`;
-            if (nextStates[targetKey]) {
-              nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
-            }
-          });
-        }
+        uniqueOutputs.forEach(d => {
+          const targetKey = `${r + d.dy}_${c + d.dx}`;
+          if (nextStates[targetKey]) {
+            nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+          }
+        });
       }
     }
   }
@@ -138,22 +137,10 @@ export function tickCircuitSimulation(gridData) {
     }
 
     if (current.type === 'gate' && current.id !== 'oneway') {
-      const gateId = current.id.toLowerCase();
-      const isInverting = (gateId === 'not' || gateId === 'nand' || gateId === 'xnor');
       const activeSides = [];
 
       if (current.incomingSignals && current.incomingSignals.length > 0) {
         current.incomingSignals.forEach(sig => {
-          // FIX: Inverting omni-directional output gates ignore signals bouncing back from wires they power
-          if (isInverting) {
-            const sourceKey = `${r - sig.dy}_${c - sig.dx}`;
-            const sourceCell = gridData[sourceKey];
-            // If the source tile is just a conductor receiving our power, do not treat it as an active input command
-            if (sourceCell && (sourceCell.id === 'conduct' || sourceCell.id === 'toggle') && sourceCell.state === 1) {
-              return; 
-            }
-          }
-
           if (sig.dx === 1 && sig.dy === 0) activeSides.push('left');   
           if (sig.dx === -1 && sig.dy === 0) activeSides.push('right'); 
           if (sig.dx === 0 && sig.dy === 1) activeSides.push('top');    
@@ -167,7 +154,6 @@ export function tickCircuitSimulation(gridData) {
       const inputA = inputCount > 0 ? 1 : 0;
       const inputB = inputCount > 1 ? 1 : 0;
 
-      // Update structural runtime directly
       gridData[key].state = evaluateGate(current.id, inputA, inputB);
     }
     
