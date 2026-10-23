@@ -337,7 +337,7 @@ function updateSimulationInterval() {
 }
 
 speedSlider.addEventListener('input', (e) => {
-  currentSpeedMultiplier = parseInt(e.target.value);
+  currentSpeedMultiplier = parseInt(e.target.value / 10);
   speedLabel.innerText = `Speed: ${currentSpeedMultiplier}x`;
   updateSimulationInterval();
 });
