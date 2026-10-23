@@ -13,7 +13,7 @@ let gridData = {};
 
 
 let simulationIntervalId = null;
-let currentSpeedMultiplier = 1;
+let currentSpeedMultiplier = 10;
 const BASE_TICK_MS = 150; 
 
 const viewport = document.getElementById('viewport');
