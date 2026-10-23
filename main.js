@@ -378,7 +378,7 @@ async function init() {
     if (gate.id === 'oneway') prefix = 'OW';
     const fileExt = gate.id === 'insulate' ? '.png' : '_OFF.png';
     
-    // REPLACE YOUR OLD LINE WITH THIS EXACTLY:
+    
     btn.style.backgroundImage = `url('assets/${prefix}${fileExt}')`;
     
     btn.addEventListener('click', (e) => {
