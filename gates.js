@@ -57,6 +57,7 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
+      // FIXED syntax structure back to your exact setup style
       if (cell.incomingSignals && cell.incomingSignals.length > 0) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
@@ -90,16 +91,15 @@ export function tickCircuitSimulation(gridData) {
     else if (cell.type === 'gate' && cell.id !== 'oneway' && cell.state === 1) {
       const gateId = cell.id.toLowerCase();
       
-      // SARGICAL CHANGE: If it is an inverting gate, bypass directional inputs and populate all 4 directions
+      // Check if this is an active inverting gate
       if (gateId === 'not' || gateId === 'nand' || gateId === 'xnor') {
         orthoDirections.forEach(d => {
           const targetKey = `${r + d.dy}_${c + d.dx}`;
           if (nextStates[targetKey]) {
-            nextStates[targetKey].incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
+            nextStates[nextStates.hasOwnProperty(targetKey) ? targetKey : '']?.incomingSignals.push({ val: 1, dx: d.dx, dy: d.dy });
           }
         });
       } else {
-        // Keeps your exact original logic for directional gates (AND, OR, XOR)
         const activeInputs = cell.activeInputDirections || [];
         const targetOutputs = [];
 
