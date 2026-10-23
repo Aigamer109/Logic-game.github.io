@@ -313,7 +313,7 @@ function renderCellVisual(cellElement, itemData) {
       break;
   }
 
-  img.src = `assets/${filename}`;
+  img.src = `./assets/${filename}`;
   img.onerror = () => { 
     cellElement.style.backgroundColor = itemData.state === 1 ? '#2ecc71' : '#e74c3c'; 
   };
