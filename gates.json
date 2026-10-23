@@ -1,0 +1,15 @@
+[
+  { "id": "conduct", "name": "Conductor", "type": "wire" },
+  { "id": "insulate", "name": "Insulator", "type": "block" },
+  { "id": "switch", "name": "Toggle Switch", "type": "input", "state": 0 },
+  { "id": "button", "name": "Button", "type": "momentary", "state": 0 },
+  { "id": "toggle", "name": "Memory", "type": "memory", "state": 0 },
+  { "id": "bulb", "name": "Bulb", "type": "output", "state": 0 },
+  { "id": "oneway", "name": "One-Way Gate", "type": "gate", "state": 0, "dx": 1, "dy": 0 },
+  { "id": "and", "name": "AND Gate", "type": "gate" },
+  { "id": "or", "name": "OR Gate", "type": "gate" },
+  { "id": "xor", "name": "XOR Gate", "type": "gate" },
+  { "id": "nand", "name": "NAND Gate", "type": "gate" },
+  { "id": "not", "name": "NOT Gate", "type": "gate" },
+  { "id": "xnor", "name": "XNOR Gate", "type": "gate" }
+]
