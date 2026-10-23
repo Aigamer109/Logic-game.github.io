@@ -8,7 +8,7 @@ let isDragging = false;
 let startX, startY;
 let initialPinchDist = 0;
 let initialScale = 1.0;
-const GRID_SIZE = 128; 
+const GRID_SIZE = 512; 
 let gridData = {};
 
 
