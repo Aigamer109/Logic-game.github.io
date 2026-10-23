@@ -26,10 +26,12 @@ export function tickCircuitSimulation(gridData) {
   const nextStates = {};
   
   for (let key in gridData) {
+    // Safety check to ensure state defaults cleanly to 0 if undefined
+    const currentState = gridData[key].state !== undefined ? gridData[key].state : 0;
     nextStates[key] = {
       ...gridData[key],
       incomingSignals: [],
-      state: gridData[key].state
+      state: currentState
     };
   }
 
@@ -44,8 +46,11 @@ export function tickCircuitSimulation(gridData) {
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
     const cell = gridData[key];
+    
+    // Resolve safety baseline fallback states
+    const cellState = cell.state !== undefined ? cell.state : (cell.isInverting ? 1 : 0);
 
-    if ((cell.id === 'switch' || cell.id === 'button') && cell.state === 1) {
+    if ((cell.id === 'switch' || cell.id === 'button') && cellState === 1) {
       orthoDirections.forEach(d => {
         const neighborKey = `${r + d.dy}_${c + d.dx}`;
         if (nextStates[neighborKey]) {
@@ -53,7 +58,7 @@ export function tickCircuitSimulation(gridData) {
         }
       });
     }
-    else if ((cell.id === 'conduct' || cell.id === 'toggle') && cell.state === 1) {
+    else if ((cell.id === 'conduct' || cell.id === 'toggle') && cellState === 1) {
       let backDx = 0;
       let backDy = 0;
       
@@ -70,7 +75,7 @@ export function tickCircuitSimulation(gridData) {
         }
       });
     }
-    else if (cell.id === 'oneway' && cell.state === 1) {
+    else if (cell.id === 'oneway' && cellState === 1) {
       let receivedValidSignal = false;
       if (cell.incomingSignals && cell.incomingSignals.length > 0) {
         cell.incomingSignals.forEach(sig => {
@@ -87,12 +92,9 @@ export function tickCircuitSimulation(gridData) {
         }
       }
     }
-    // CLEANED UP CONDITION: We let all gates evaluate in Pass 1, and handle their active output rule inside
     else if (cell.type === 'gate' && cell.id !== 'oneway') {
-      
       if (cell.isInverting) {
-        // If it's an inverting gate, it outputs to all 4 squares if its current state is active (1)
-        if (cell.state === 1) {
+        if (cellState === 1) {
           orthoDirections.forEach(d => {
             const targetKey = `${r + d.dy}_${c + d.dx}`;
             if (nextStates[targetKey]) {
@@ -101,8 +103,7 @@ export function tickCircuitSimulation(gridData) {
           });
         }
       } else {
-        // Keeps your exact original directional logic for standard gates (AND, OR, XOR) if they are active
-        if (cell.state === 1) {
+        if (cellState === 1) {
           const activeInputs = cell.activeInputDirections || [];
           const targetOutputs = [];
 
