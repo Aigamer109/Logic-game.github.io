@@ -18,11 +18,21 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 #tray { position: fixed; bottom: -140px; left: 0; width: 100%; height: 140px; background: rgba(20, 20, 20, 0.95); border-top: 2px solid #333; transition: bottom 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); z-index: 999; display: flex; flex-direction: column; }
 #tray.open { bottom: 0; }
 #tray-scroller { flex: 1; overflow-x: auto; overflow-y: hidden; white-space: nowrap; padding: 10px; display: flex; gap: 12px; align-items: center; -webkit-overflow-scrolling: touch; }
-.tray-item { flex-shrink: 0; width: 64px; height: 64px; background-color: #2a2a2a; border: 2px solid #444; border-radius: 8px; }
+.tray-item { flex-shrink: 0; width: 64px; height: 64px; background-color: #2a2a2a; border: 2px solid #444; border-radius: 8px; position: relative; }
 .tray-item.active { border-color: #2ecc71 !important; background-color: #1e3c23; }
 .speed-control-container { display: flex; align-items: center; gap: 12px; background: #181818; padding: 6px 16px; border-top: 1px solid #2d2d2d; height: 36px; box-sizing: border-box; }
 #speed-slider { flex: 1; height: 6px; background: #444; outline: none; accent-color: #2ecc71; }
 #speed-label { color: #bbb; font-size: 12px; font-weight: bold; min-width: 75px; text-align: right; }
+
+#mode-btn { width: 64px; height: 64px; background: #333; color: #fff; border: 2px solid #555; border-radius: 8px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; text-align: center; box-sizing: border-box; }
+#mode-btn.select-mode { background: #2980b9; border-color: #3498db; }
+
+#selection-box { position: absolute; border: 2px dashed #3498db; background: rgba(52, 152, 219, 0.2); pointer-events: none; display: none; z-index: 500; }
+#selection-overlay { position: absolute; border: 2px solid #2ecc71; background: rgba(46, 204, 113, 0.15); pointer-events: none; display: none; z-index: 501; }
+.selection-action-btn { position: relative; padding: 6px 10px; background: #222; color: #fff; border: 1px solid #555; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; z-index: 600; text-transform: uppercase; }
+.selection-action-btn:hover { background: #444; }
+
+#paste-preview-box { position: absolute; border: 2px dashed #e67e22; background: rgba(230, 126, 34, 0.2); pointer-events: none; display: none; z-index: 502; }
 </style>
 </head>
 <body>
@@ -35,11 +45,23 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 </div>
 <div id="viewport">
 <div id="canvas-container">
-<div id="grid"></div>
+<div id="grid">
+<div id="selection-box"></div>
+<div id="selection-overlay"></div>
+<div id="paste-preview-box"></div>
 </div>
+</div>
+</div>
+<div id="selection-menu" style="display:none;">
+<button id="sel-copy-btn" class="selection-action-btn">Copy</button>
+<button id="sel-cut-btn" class="selection-action-btn">Cut</button>
+<button id="sel-move-btn" class="selection-action-btn">Move</button>
 </div>
 <div id="tray">
-<div id="tray-scroller"></div>
+<div id="tray-scroller">
+<div style="flex-grow: 1;"></div>
+<button id="mode-btn">Mode:<br>Normal</button>
+</div>
 <div class="speed-control-container">
 <input type="range" id="speed-slider" min="1" max="100" value="10">
 <span id="speed-label">Speed: 10x</span>
