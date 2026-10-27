@@ -40,7 +40,7 @@ export function tickCircuitSimulation(gridData) {
     { dx: 0, dy: -1, from: 'bottom' } 
   ];
 
-  // PASS 1: Calculate power distribution vector maps
+  
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
     const cell = gridData[key];
@@ -57,7 +57,7 @@ export function tickCircuitSimulation(gridData) {
       let backDx = 0;
       let backDy = 0;
       
-      // FIXED: Added [0] index to read properties from the array item correctly
+      
       if (cell.incomingSignals && cell.incomingSignals.length > 0 && cell.incomingSignals[0]) {
         backDx = -cell.incomingSignals[0].dx;
         backDy = -cell.incomingSignals[0].dy;
@@ -92,7 +92,7 @@ export function tickCircuitSimulation(gridData) {
       const gateId = cell.id ? cell.id.toLowerCase() : '';
       const isInverting = (gateId === 'not' || gateId === 'nand' || gateId === 'xnor');
       
-      // If it's an inverting gate, let it run when state is 1 OR uninitialized (undefined) so it works on frame 1
+     
       const shouldOutput = isInverting ? (cell.state !== 0) : (cell.state === 1);
 
       if (shouldOutput) {
@@ -129,7 +129,7 @@ export function tickCircuitSimulation(gridData) {
     }
   }
 
-  // PASS 2: Poll structural inputs and commit transitions
+
   for (let key in gridData) {
     const [r, c] = key.split('_').map(Number);
     const current = nextStates[key];
